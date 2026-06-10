@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>重启今天 - 网页 Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="scene-panel" aria-live="polite">
+      <div class="title-block">
+        <div class="title-row">
+          <div>
+            <p class="eyebrow">网页 2D 时间管理 Demo</p>
+            <h1>重启今天</h1>
+          </div>
+          <div>
+            <button class="manual-button" id="manualButton" title="游戏说明">说明</button>
+            <button class="manual-button" id="routeButton" title="演示路线">演示</button>
+          </div>
+        </div>
+        <p class="tagline">不是更努力地塞满每一分钟，而是学会更好地选择今天。</p>
+      </div>
+
+      <div class="scene-card" id="sceneCard">
+        <div class="scene-sky" id="sceneSky">
+          <div class="sun"></div>
+          <div class="desk"></div>
+        </div>
+        <div class="scene-copy">
+          <p class="time-label" id="timeLabel">早晨</p>
+          <h2 id="sceneTitle">卧室</h2>
+          <p id="sceneText">手机闹钟第三次响起。今天是课程作品提交前最后一天，你知道自己又回到了同一个早晨。</p>
+        </div>
+      </div>
+
+      <div class="story-box">
+        <p id="storyText">老师的消息停在屏幕上："今天是最后准备时间。"同学又发来一句："你还好吗？"</p>
+      </div>
+
+      <section class="event-card hidden" id="eventCard">
+        <p class="eyebrow">今日插曲</p>
+        <h2 id="eventTitle">没有意外发生</h2>
+        <p id="eventText"></p>
+      </section>
+
+      <div class="left-info-grid">
+        <section class="paper-card goals-card">
+          <h2>今日目标</h2>
+          <ul class="goal-list" id="goalList"></ul>
+        </section>
+
+        <section class="paper-card achievement-card">
+          <h2>小成就</h2>
+          <ul id="achievementList"></ul>
+        </section>
+      </div>
+
+      <div class="result-box hidden" id="resultBox">
+        <h2 id="resultTitle"></h2>
+        <p id="resultText"></p>
+        <div class="submit-card hidden" id="submitCard">
+          <p class="eyebrow">作品提交页</p>
+          <h3>今天交上的，不只是作品</h3>
+          <ul id="submitList"></ul>
+        </div>
+        <div class="review-card" id="reviewCard">
+          <p class="eyebrow">循环复盘</p>
+          <h3 id="reviewTitle">这轮留下了什么</h3>
+          <ul id="reviewList"></ul>
+        </div>
+        <ul class="round-summary" id="roundSummary"></ul>
+        <button class="primary-button" id="restartButton">重启今天</button>
+      </div>
+    </section>
+
+    <aside class="control-panel">
+      <section class="paper-card">
+        <div class="card-heading">
+          <h2>今日进度</h2>
+          <span id="loopCount">第 1 次循环</span>
+        </div>
+        <ol class="timeline" id="timeline"></ol>
+      </section>
+
+
+      <section class="paper-card stats-card">
+        <h2>状态</h2>
+        <div class="stat" data-stat="stress">
+          <div class="stat-top"><span>压力</span><strong id="stressValue">40</strong></div>
+          <div class="bar"><span id="stressBar"></span></div>
+        </div>
+        <div class="stat" data-stat="focus">
+          <div class="stat-top"><span>专注</span><strong id="focusValue">50</strong></div>
+          <div class="bar"><span id="focusBar"></span></div>
+        </div>
+        <div class="stat" data-stat="relation">
+          <div class="stat-top"><span>关系</span><strong id="relationValue">30</strong></div>
+          <div class="bar"><span id="relationBar"></span></div>
+        </div>
+        <div class="stat" data-stat="self">
+          <div class="stat-top"><span>自我认同</span><strong id="selfValue">20</strong></div>
+          <div class="bar"><span id="selfBar"></span></div>
+        </div>
+        <div class="stat" data-stat="progress">
+          <div class="stat-top"><span>任务进度</span><strong id="progressValue">0</strong></div>
+          <div class="bar"><span id="progressBar"></span></div>
+        </div>
+        <div class="status-tags" id="statusTags"></div>
+      </section>
+
+      <section class="paper-card strategy-card">
+        <div class="card-heading">
+          <h2>今日策略</h2>
+          <span id="strategyLabel">未选择</span>
+        </div>
+        <p class="strategy-help">策略会改变部分行动收益。每轮开始后只能制定一次，也可以不选直接行动。</p>
+        <div class="strategy-options" id="strategyOptions"></div>
+      </section>
+
+      <section class="paper-card">
+        <h2>选择一个行动</h2>
+        <div class="actions" id="actions"></div>
+      </section>
+
+
+      <section class="paper-card ending-card">
+        <h2>结局图鉴</h2>
+        <ul id="endingList"></ul>
+      </section>
+
+      <section class="paper-card clues-card">
+        <h2>今天笔记</h2>
+        <p class="next-reminder" id="nextReminder">还没有上一轮提醒。先走完今天，重启后会留下下一步建议。</p>
+        <ul id="clueList"></ul>
+      </section>
+    </aside>
+    <!-- Manual Modal -->
+    <div class="manual-overlay hidden" id="manualOverlay">
+      <div class="manual-card">
+        <div class="manual-header">
+          <h2>游戏说明手册</h2>
+          <button class="manual-close" id="manualClose">&times;</button>
+        </div>
+        <div class="manual-body">
+          <section>
+            <h3>背景</h3>
+            <p>你是一名学生，今天是课程作品提交前的最后一天。你的时间只有 6 格——早晨、上午、中午、下午、傍晚、夜晚。每次行动消耗一格时间。如果压力爆表或夜晚到来，今天结束。</p>
+            <p>好消息是：失败后可以重启今天。更好的消息是：线索和记忆会保留到下一轮。</p>
+          </section>
+          <section>
+            <h3>五种状态</h3>
+            <ul>
+              <li><strong>压力</strong>（红色）：达到 100 立即过载失败。赶工、连续赶工、随机事件会增加；休息、聊天、求助可降低。</li>
+              <li><strong>专注</strong>（蓝色）：会影响学习效率。专注较高时学习额外增加进度，专注过低时学习收益下降。</li>
+              <li><strong>关系</strong>（绿色）：找朋友聊天可提升。关系达到 50 或获得求助线索后，可以求助。</li>
+              <li><strong>自我认同</strong>（紫色）：做兴趣活动大幅提升。低于 50 即使交了作品也是"空心完成"。</li>
+              <li><strong>任务进度</strong>（橙色）：赶工 +25，求助 +30。达到 80 才有好结局资格。</li>
+            </ul>
+          </section>
+          <section>
+            <h3>今日策略</h3>
+            <ul>
+              <li><strong>稳住节奏</strong>：休息额外降低压力，学习压力略微降低，适合避免过载。</li>
+              <li><strong>冲刺提交</strong>：学习和求助额外推进进度，但学习会带来更多压力。</li>
+              <li><strong>先找连接</strong>：聊天获得更多关系，求助收益略高，适合快速打开求助路线。</li>
+            </ul>
+          </section>
+          <section>
+            <h3>五种行动</h3>
+            <ul>
+              <li><strong>学习 / 赶工</strong>：基础任务进度 +25，专注 +15，压力 +20。连续选择额外 +15 压力；专注和策略会改变实际收益。</li>
+              <li><strong>休息</strong>：压力 -25，专注 +5。压力 ≥ 80 时休息会睡过头，跳过下一格时间。</li>
+              <li><strong>找朋友聊天</strong>：基础关系 +20，压力 -10。中午去天台会触发特殊线索和求助提示。</li>
+              <li><strong>做兴趣活动</strong>：自我认同 +30，压力 -10。不加进度，但影响结局。</li>
+              <li><strong>向老师 / 学长求助</strong>：基础任务进度 +30，压力 -10。需要关系足够或获得线索。</li>
+            </ul>
+          </section>
+          <section>
+            <h3>成功条件</h3>
+            <p>不是把每一格都填满任务，而是达到好结局的平衡条件：</p>
+            <ul>
+              <li>任务进度 ≥ 80</li>
+              <li>压力值 < 90</li>
+              <li>自我认同 ≥ 50</li>
+              <li>至少找过朋友或求助一次</li>
+            </ul>
+          </section>
+          <section>
+            <h3>五种结局</h3>
+            <ul>
+              <li><strong>过载失败</strong>：压力 ≥ 100，时间倒流，记忆保留</li>
+              <li><strong>目标未完成</strong>：夜晚任务进度 < 80</li>
+              <li><strong>空心完成</strong>：任务完成但自我认同 < 50</li>
+              <li><strong>差一点的一天</strong>：任务完成但压力或自我不达标</li>
+              <li><strong>不是满分的一天</strong>：平衡的胜利</li>
+            </ul>
+          </section>
+          <section>
+            <h3>五张今天笔记</h3>
+            <ul>
+              <li><strong>连续赶工会让压力失控</strong>：不能只靠硬撑</li>
+              <li><strong>中午去天台更容易遇到朋友</strong>：特定时间特定地点</li>
+              <li><strong>关系足够时可以开口求助</strong>：积累是关键</li>
+              <li><strong>兴趣活动会影响最后的自我认同</strong>：做自己很重要</li>
+              <li><strong>休息不能拖到完全崩溃之后</strong>：预防胜于治疗</li>
+            </ul>
+          </section>
+          <section>
+            <h3>游戏主题</h3>
+            <p>《重启今天》不表达"不要努力"，也不鼓励"躺平"。它表达的是：<br>
+            <em>真正的成长不是无限消耗自己，而是学会取舍、求助、休息，并保留自己的节奏。</em></p>
+          </section>
+        </div>
+      </div>
+    </div>
+    <!-- Route Modal -->
+    <div class="manual-overlay hidden" id="routeOverlay">
+      <div class="manual-card">
+        <div class="manual-header">
+          <h2>90 秒演示路线</h2>
+          <button class="manual-close" id="routeClose">&times;</button>
+        </div>
+        <div class="manual-body">
+          <section>
+            <h3>评委快速体验建议</h3>
+            <p>这条路线能在短时间内展示“失败 → 便签 → 重启 → 调整 → 好结局”的完整闭环。</p>
+            <ol class="route-list">
+              <li><strong>连续赶工：</strong>连续选择“学习 / 赶工”，展示任务进度上升但压力快速累积。</li>
+              <li><strong>过载重启：</strong>压力爆表后进入“过载失败”，今天笔记新增便签。</li>
+              <li><strong>发现连接：</strong>重启后尝试找朋友聊天，中午天台会解锁求助线索。</li>
+              <li><strong>组合通关：</strong>安排学习、朋友、求助、休息和兴趣活动。</li>
+              <li><strong>主题落点：</strong>展示好结局“不是满分的一天”。</li>
+            </ol>
+          </section>
+          <section>
+            <h3>推荐通关路线</h3>
+            <p>稳住节奏 → 学习 / 赶工 → 休息 → 找朋友聊天 → 向老师 / 学长求助 → 学习 / 赶工 → 做兴趣活动。</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
